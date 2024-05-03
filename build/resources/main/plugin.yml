@@ -1,0 +1,26 @@
+name: DailyOnlineReward
+version: '1.0-SNAPSHOT'
+main: org.example.spigot.dailyonlinereward.DailyOnlineReward
+api-version: '1.20'
+author: LittleQiu139
+description: 每日在线奖励插件.
+depend: [Vault]
+softdepend: [antixray]
+commands:
+  reload:
+    description: 重载config.
+    usage: "/dora reload"
+    aliases: dora
+  open:
+    description: 打开界面.
+    usage: "/dor open"
+    aliases: dor
+
+permissions:
+  dailyonlinereward.reload:
+    description: 重载指令权限.
+    default: op
+  dailyonlinereward.open:
+    description: 打开领取界面权限.
+    default: true
+
