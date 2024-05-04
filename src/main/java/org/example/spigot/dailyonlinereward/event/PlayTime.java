@@ -5,9 +5,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.example.spigot.dailyonlinereward.gui.Open;
-import org.example.spigot.dailyonlinereward.util.CommonlyUtil;
-import org.example.spigot.dailyonlinereward.util.ConfigUtil;
 import org.example.spigot.dailyonlinereward.util.ConnectMysql;
 import org.example.spigot.dailyonlinereward.util.ConsoleMsg;
 
@@ -16,12 +13,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class PlayTime implements Listener {
     private ConnectMysql sql;
-    Integer playTime;
+    Integer playTime1;
+    Integer playTime2;
     PreparedStatement preparedStatement = null;
     ResultSet resultSet = null;
 
@@ -39,35 +36,30 @@ public class PlayTime implements Listener {
         Player player = event.getPlayer();
         String playerName = player.getPlayerListName();
         UUID uuid = event.getPlayer().getUniqueId();
-        long joinTime = System.currentTimeMillis();
+        Long joinTime = System.currentTimeMillis();
         playTimes.put(uuid, joinTime);
         getId.put(uuid, playerName);
 
-        // 获取玩家的在线时间
         try {
-            playTime = getPlayTime(player.getUniqueId());
+            playTime1 = getPlayTime(uuid);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        if(playTime == 0){
-            if (Open.limit != null) {
-                for (Map.Entry<String, Integer> entry : Open.limit.entrySet()) {
-                    entry.setValue(0);
-                    console.consoleMessage("§a[每日在线奖励]已刷新玩家奖励.");
-                    player.sendMessage("§a[每日在线奖励]已刷新玩家奖励.");
-                }
-            } else {
-                // 如果 UUID 不存在，可以选择创建新的 HashMap，或者处理异常情况
-                Open.limit = new HashMap<>();
-            }
-        }
+        ensurePlayerRecord(uuid, 0);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
         Long joinTime = playTimes.get(uuid);
-        if (joinTime != null) {
+
+        try {
+            playTime2 = getPlayTime(uuid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if (joinTime != null && playTime1 == playTime2) {
             long onlineDuration = (System.currentTimeMillis() - joinTime) / 1000;
             try (Connection conn = sql.getConnection();
                  PreparedStatement ps = conn.prepareStatement("UPDATE player_times SET play_time = play_time + ? WHERE uuid = ?")) {
@@ -100,7 +92,7 @@ public class PlayTime implements Listener {
     }
     private void insertNewRecord(UUID uuid, long onlineDuration) {
         try (Connection conn = sql.getConnection();
-             PreparedStatement ps = conn.prepareStatement("INSERT INTO player_times (uuid, name, play_time) VALUES (?, ?, ?)")) {
+             PreparedStatement ps = conn.prepareStatement("INSERT INTO player_times (uuid, name, play_time, 10min, 30min, 60min) VALUES (?, ?, ?, 1, 1, 1)")) {
             ps.setString(1, uuid.toString());
             ps.setString(2, getId.get(uuid));
             ps.setLong(3, onlineDuration);
@@ -110,6 +102,7 @@ public class PlayTime implements Listener {
         }
     }
     public Integer getPlayTime(UUID uuid) throws SQLException {
+        Integer playTime = 0;
         this.sql = new ConnectMysql();
         Connection conn = sql.getConnection();
         try {

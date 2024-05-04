@@ -5,9 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.example.spigot.dailyonlinereward.util.CommonlyUtil;
-import org.example.spigot.dailyonlinereward.util.ConnectMysql;
-import org.example.spigot.dailyonlinereward.gui.Open;
+import org.example.spigot.dailyonlinereward.gui.OpenMenu;
 
 public class Player implements CommandExecutor {
     private final JavaPlugin plugin;
@@ -21,7 +19,7 @@ public class Player implements CommandExecutor {
             return true;
         }
         org.bukkit.entity.Player player = (org.bukkit.entity.Player) sender;
-        final Inventory inventory = (new Open(player)).getInventory();
+        Inventory inventory = (new OpenMenu(player)).getInventory();
 
         if (args.length == 1) {
             if (args[0].equalsIgnoreCase("open")) {

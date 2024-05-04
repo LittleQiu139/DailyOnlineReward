@@ -57,7 +57,10 @@ public class ConnectMysql {
         String createTableSQL = "CREATE TABLE IF NOT EXISTS player_times (" +
                 "uuid VARCHAR(255) NOT NULL PRIMARY KEY, " +
                 "name VARCHAR(255) NOT NULL, " +
-                "play_time BIGINT NOT NULL)";
+                "play_time SMALLINT NOT NULL, " +
+                "10min TINYINT NOT NULL, " +
+                "30min TINYINT NOT NULL, " +
+                "60min TINYINT NOT NULL)";
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(createTableSQL);
             console.consoleMessage("§a[每日在线奖励]确保表 'player_times' 存在.");

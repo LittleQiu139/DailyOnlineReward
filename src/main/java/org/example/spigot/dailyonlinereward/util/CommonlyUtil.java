@@ -30,7 +30,7 @@ public class CommonlyUtil {
         int nowMinute = Integer.parseInt(timegroup.split(":")[4]);
         return nowYear + ":" + nowMonth + ":" + nowDay + ":" + nowHour + ":" + nowMinute;
     }
-    /*
+
     public Integer getPlayTime(UUID uuid) throws SQLException {
         this.sql = new ConnectMysql();
         Connection conn = sql.getConnection();
@@ -56,7 +56,7 @@ public class CommonlyUtil {
         return playTime;
     }
 
-     */
+
     public static String getLore(String min) {
         String lore = ConfigUtil.config.getString("rewards." + min);
         lore = lore.replace("&", "§");
