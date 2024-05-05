@@ -25,10 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static org.example.spigot.dailyonlinereward.DailyOnlineReward.isListenerRegistered;
+
 public class OpenMenu implements InventoryHolder, Listener {
     Inventory inventory;
-    ConsoleMsg console;
     Player player;
+    ConsoleMsg console;
     Integer playTime;
     List<String> lore = new ArrayList<>();
     private ConnectMysql sql;
@@ -36,7 +38,6 @@ public class OpenMenu implements InventoryHolder, Listener {
     ResultSet resultSet = null;
     int minute;
     int second;
-    private boolean isListenerRegistered = false;
     public OpenMenu(Player player) {
         this.player = player;
         this.sql = new ConnectMysql();
@@ -108,6 +109,8 @@ public class OpenMenu implements InventoryHolder, Listener {
             Bukkit.getPluginManager().registerEvents(this, DailyOnlineReward.getPlugin(DailyOnlineReward.class));
             isListenerRegistered = true;
         }
+        this.inventory = inventory;
+        this.player = player;
     }
 
     // 物品栏被点击时的事件处理方法
@@ -208,7 +211,6 @@ public class OpenMenu implements InventoryHolder, Listener {
         }
         return playTime;
     }
-
 
     public Inventory getInventory() {
         return this.inventory;

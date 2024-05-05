@@ -2,18 +2,24 @@ package org.example.spigot.dailyonlinereward;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.example.spigot.dailyonlinereward.command.Admin;
-import org.example.spigot.dailyonlinereward.command.Player;
+import org.example.spigot.dailyonlinereward.command.PlayerCMD;
 import org.example.spigot.dailyonlinereward.event.DailyResetTask;
 import org.example.spigot.dailyonlinereward.event.PlayTime;
+import org.example.spigot.dailyonlinereward.gui.OpenMenu;
 import org.example.spigot.dailyonlinereward.util.ConsoleMsg;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.UUID;
 
 public final class DailyOnlineReward extends JavaPlugin implements Listener {
     public static Plugin plugin;
+    public static boolean isListenerRegistered = false;
+
     ConsoleMsg console = new ConsoleMsg();
     public DailyOnlineReward(){
     }
@@ -36,7 +42,7 @@ public final class DailyOnlineReward extends JavaPlugin implements Listener {
         }
 
         this.getCommand("dora").setExecutor(new Admin(this));  // 将 admin 实例设置为命令执行器
-        this.getCommand("dor").setExecutor(new Player(this));
+        this.getCommand("dor").setExecutor(new PlayerCMD(this));
 
         getServer().getPluginManager().registerEvents(this, this);
         (new DailyResetTask()).runTaskTimerAsynchronously(plugin, 1200L, 1200L);

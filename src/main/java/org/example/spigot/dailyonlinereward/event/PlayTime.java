@@ -39,7 +39,6 @@ public class PlayTime implements Listener {
         Long joinTime = System.currentTimeMillis();
         playTimes.put(uuid, joinTime);
         getId.put(uuid, playerName);
-
         try {
             playTime1 = getPlayTime(uuid);
         } catch (SQLException e) {
